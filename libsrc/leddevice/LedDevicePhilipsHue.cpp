@@ -210,6 +210,8 @@ PhilipsHueLight::~PhilipsHueLight() {
 }
 
 void PhilipsHueLight::set(QString state) {
+	// Un-comment for debug output.
+	// std::cout << "PhilipsHueLight::set(): { \"id\": " << id << ", \"state\": " << state.toStdString() << " }" << std::endl;
 	bridge.post(QString("lights/%1/state").arg(id), state);
 }
 
@@ -242,7 +244,7 @@ void PhilipsHueLight::setColor(CiColor color, bool setBrightness, bool force) {
 		if (setBrightness) {
 			set(
 					QString("{ \"xy\": [%1, %2], \"bri\": %3 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4).arg(
-							color.bri * 254));
+							qMin(254, qMax(0, qRound(color.bri * 254)))));
 		} else {
 			set(QString("{ \"xy\": [%1, %2], \"bri\": 254 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4));
 		}
