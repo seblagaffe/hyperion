@@ -8,7 +8,6 @@
 #include <QtCore/qmath.h>
 #include <QEventLoop>
 #include <QNetworkReply>
-#include <QColor>
 
 #include <stdexcept>
 #include <set>
@@ -142,9 +141,9 @@ CiColor PhilipsHueLight::rgbToCiColor(float red, float green, float blue) {
 }
 
 LedDevicePhilipsHue::LedDevicePhilipsHue(const std::string& output, const std::string& username, bool switchOffOnBlack,
-		bool useHueSat, int transitiontime, std::vector<unsigned int> lightIds) :
-		host(output.c_str()), username(username.c_str()), switchOffOnBlack(switchOffOnBlack), useHueSat(useHueSat), 
-				transitiontime(transitiontime), lightIds(lightIds) {
+		int transitiontime, std::vector<unsigned int> lightIds) :
+		host(output.c_str()), username(username.c_str()), switchOffOnBlack(switchOffOnBlack), transitiontime(
+				transitiontime), lightIds(lightIds) {
 	manager = new QNetworkAccessManager();
 	timer.setInterval(3000);
 	timer.setSingleShot(true);
@@ -184,35 +183,17 @@ int LedDevicePhilipsHue::write(const std::vector<ColorRgb> & ledValues) {
 				// Send adjust color and brightness command in JSON format.
 				// We have to set the transition time each time.
 				// Send also command to switch the lamp on.
-				if (!useHueSat) {
-					put(getStateRoute(lamp.id),
-							QString("{\"on\": true, \"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(xy.x).arg(
-									xy.y).arg(qRound(xy.bri * 255.0f)).arg(transitiontime));
-				} else {
-					QColor c(color.red, color.green, color.blue);
-					quint16 hue = c.hue() * 65535 / 360;
-					quint8 sat = c.saturation();
-					put(getStateRoute(lamp.id),
-							QString("{\"on\": true, \"hue\": %1, \"sat\": %2, \"transitiontime\": %3}").arg(hue).arg(
-									sat).arg(transitiontime));
-				}
+				put(getStateRoute(lamp.id),
+						QString("{\"on\": true, \"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(xy.x).arg(
+								xy.y).arg(qRound(xy.bri * 255.0f)).arg(transitiontime));
 			}
 			// Normal color change.
 			else {
 				// Send adjust color and brightness command in JSON format.
 				// We have to set the transition time each time.
-				if (!useHueSat) {
-					put(getStateRoute(lamp.id),
-							QString("{\"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(xy.x).arg(xy.y).arg(
-									qRound(xy.bri * 255.0f)).arg(transitiontime));
-				} else {
-					QColor c(color.red, color.green, color.blue);
-					quint16 hue = c.hue() * 65535 / 360;
-					quint8 sat = c.saturation();
-					put(getStateRoute(lamp.id),
-						QString("{\"on\": true, \"hue\": %1, \"sat\": %2, \"transitiontime\": %3}").arg(hue).arg(
-									sat).arg(transitiontime));
-				}
+				put(getStateRoute(lamp.id),
+						QString("{\"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(xy.x).arg(xy.y).arg(
+								qRound(xy.bri * 255.0f)).arg(transitiontime));
 			}
 		}
 		// Remember last color.

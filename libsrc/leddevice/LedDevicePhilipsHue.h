@@ -128,14 +128,12 @@ public:
 	///
 	/// @param switchOffOnBlack kill lights for black (default: false)
 	///
-	/// @param useHueSat use hue and saturation instead of x, y and brightness (slower).
-	///
-	/// @param transitiontime the time duration a light change takes in multiples of 100 ms (default: 100 ms).
+	/// @param transitiontime the time duration a light change takes in multiples of 100 ms (default: 400 ms).
 	///
 	/// @param lightIds light ids of the lights to control if not starting at one in ascending order.
 	///
 	LedDevicePhilipsHue(const std::string& output, const std::string& username = "newdeveloper", bool switchOffOnBlack =
-			false, bool useHueSat = false, int transitiontime = 1, std::vector<unsigned int> lightIds = std::vector<unsigned int>());
+			false, int transitiontime = 1, std::vector<unsigned int> lightIds = std::vector<unsigned int>());
 
 	///
 	/// Destructor of this device
@@ -171,7 +169,6 @@ private:
 	QTimer timer;
 	///
 	bool switchOffOnBlack;
-	bool useHueSat;
 	/// Transition time in multiples of 100 ms.
 	/// The default of the Hue lights will be 400 ms, but we want to have it snapier
 	int transitiontime;
