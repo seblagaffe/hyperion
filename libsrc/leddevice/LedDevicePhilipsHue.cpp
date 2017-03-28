@@ -99,14 +99,9 @@ CiColor PhilipsHueLight::rgbToCiColor(float red, float green, float blue) {
 	float g = (green > 0.04045f) ? powf((green + 0.055f) / (1.0f + 0.055f), 2.4f) : (green / 12.92f);
 	float b = (blue > 0.04045f) ? powf((blue + 0.055f) / (1.0f + 0.055f), 2.4f) : (blue / 12.92f);
 	// Convert to XYZ space.
-	//	float X = r * 0.649926f + g * 0.103455f + b * 0.197109f;
-	//	float Y = r * 0.234327f + g * 0.743075f + b * 0.022598f;
-	//	float Z = r * 0.0000000f + g * 0.053077f + b * 1.035763f;
-	// Slightly different implementation as documented.
-	// See https://github.com/mikz/PhilipsHueSDKiOS/blob/master/ApplicationDesignNotes/RGB%20to%20xy%20Color%20conversion.md
-	float X = r * 0.4124f + g * 0.3576f + b * 0.1805f;
-	float Y = r * 0.2126f + g * 0.7152f + b * 0.0722f;
-	float Z = r * 0.0193f + g * 0.1192f + b * 0.9505f;
+	float X = r * 0.664511f + g * 0.154324f + b * 0.162028f;
+	float Y = r * 0.283881f + g * 0.668433f + b * 0.047685f;
+	float Z = r * 0.000088f + g * 0.072310f + b * 0.986039f;
 	// Convert to x,y space.
 	float cx = X / (X + Y + Z);
 	float cy = Y / (X + Y + Z);
@@ -189,15 +184,19 @@ int LedDevicePhilipsHue::write(const std::vector<ColorRgb> & ledValues) {
 				// We have to set the transition time each time.
 				// Send also command to switch the lamp on.
 				put(getStateRoute(lamp.id),
-						QString("{\"on\": true, \"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(xy.x).arg(
-								xy.y).arg(qRound(xy.bri * 255.0f)).arg(transitiontime));
+						QString(
+								"{\"on\": true, \"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(
+								xy.x, 0, 'f', 4).arg(xy.y, 0, 'f', 4).arg(
+								qRound(xy.bri * 255.0f)).arg(transitiontime));
 			}
 			// Normal color change.
 			else {
 				// Send adjust color and brightness command in JSON format.
 				// We have to set the transition time each time.
 				put(getStateRoute(lamp.id),
-						QString("{\"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(xy.x).arg(xy.y).arg(
+						QString(
+								"{\"xy\": [%1, %2], \"bri\": %3, \"transitiontime\": %4}").arg(
+								xy.x, 0, 'f', 4).arg(xy.y, 0, 'f', 4).arg(
 								qRound(xy.bri * 255.0f)).arg(transitiontime));
 			}
 		}
