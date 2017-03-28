@@ -262,12 +262,13 @@ LedDevice * LedDeviceFactory::construct(const Json::Value & deviceConfig)
 		const std::string output = deviceConfig["output"].asString();
 		const std::string username = deviceConfig.get("username", "newdeveloper").asString();
 		const bool switchOffOnBlack = deviceConfig.get("switchOffOnBlack", true).asBool();
+		const bool setBrightnes = deviceConfig.get("setBrightnes", true).asBool();
 		const int transitiontime = deviceConfig.get("transitiontime", 1).asInt();
 		std::vector<unsigned int> lightIds;
 		for (Json::Value::ArrayIndex i = 0; i < deviceConfig["lightIds"].size(); i++) {
 			lightIds.push_back(deviceConfig["lightIds"][i].asInt());
 		}
-		device = new LedDevicePhilipsHue(output, username, switchOffOnBlack, transitiontime, lightIds);
+		device = new LedDevicePhilipsHue(output, username, switchOffOnBlack, setBrightnes, transitiontime, lightIds);
 	}
 	else if (type == "atmoorb")
 	{
