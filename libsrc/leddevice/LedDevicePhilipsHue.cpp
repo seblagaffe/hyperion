@@ -240,10 +240,8 @@ unsigned int PhilipsHueLight::getTransitionTime() const {
 
 void PhilipsHueLight::setColor(CiColor color, float brightnessFactor, bool force) {
 	if (force || this->color != color) {
-		setOn(true);
-		set(
-				QString("{ \"xy\": [%1, %2], \"bri\": %3 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4).arg(
-						qRound(qMin(254.0f, brightnessFactor * qMax(1.0f, color.bri * 254.0f)))));
+		const int bri = qRound(qMin(254.0f, brightnessFactor * qMax(1.0f, color.bri * 254.0f)));
+		set(QString("{ \"xy\": [%1, %2], \"bri\": %3 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4).arg(bri));
 	}
 	this->color = color;
 }
