@@ -164,7 +164,7 @@ public:
 	void setTransitionTime(unsigned int transitionTime, bool force = false);
 	unsigned int getTransitionTime() const;
 
-	void setColor(CiColor color, bool setBrightness = true, bool force = false);
+	void setColor(CiColor color, float brightnessFactor = 1.0f, bool force = false);
 	CiColor getColor() const;
 
 	CiColorTriangle getColorSpace() const;
@@ -193,14 +193,14 @@ public:
 	///
 	/// @param switchOffOnBlack kill lights for black (default: false)
 	///
-	/// @param setBrightness set the brightness from the RGB values (default: true)
+	/// @param brightnessFactor set the brightness factor to multiply (default: 1.0)
 	///
 	/// @param transitionTime the time duration a light change takes in multiples of 100 ms (default: 400 ms).
 	///
 	/// @param lightIds light ids of the lights to control if not starting at one in ascending order.
 	///
 	LedDevicePhilipsHue(const std::string& output, const std::string& username = "newdeveloper", bool switchOffOnBlack =
-			false, bool setBrightness = true, int transitionTime = 1,
+			false, float brightnessFactor = 1.0, int transitionTime = 1,
 			std::vector<unsigned int> lightIds = std::vector<unsigned int>());
 
 	///
@@ -230,8 +230,8 @@ private:
 	QTimer timer;
 	///
 	bool switchOffOnBlack;
-	/// Set the brightness on color change.
-	bool setBrightness;
+	/// The brightness factor to multiply on color change.
+	float brightnessFactor;
 	/// Transition time in multiples of 100 ms.
 	/// The default of the Hue lights is 400 ms, but we may want it snapier.
 	int transitionTime;

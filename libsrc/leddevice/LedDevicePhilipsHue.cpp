@@ -238,16 +238,12 @@ unsigned int PhilipsHueLight::getTransitionTime() const {
 	return transitionTime;
 }
 
-void PhilipsHueLight::setColor(CiColor color, bool setBrightness, bool force) {
+void PhilipsHueLight::setColor(CiColor color, float brightnessFactor, bool force) {
 	if (force || this->color != color) {
 		setOn(true);
-		if (setBrightness) {
-			set(
-					QString("{ \"xy\": [%1, %2], \"bri\": %3 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4).arg(
-							qMin(254, qMax(0, qRound(color.bri * 254)))));
-		} else {
-			set(QString("{ \"xy\": [%1, %2], \"bri\": 254 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4));
-		}
+		set(
+				QString("{ \"xy\": [%1, %2], \"bri\": %3 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4).arg(
+						qRound(qMin(254.0f, brightnessFactor * qMax(1.0f, color.bri * 254.0f)))));
 	}
 	this->color = color;
 }
@@ -261,8 +257,8 @@ CiColorTriangle PhilipsHueLight::getColorSpace() const {
 }
 
 LedDevicePhilipsHue::LedDevicePhilipsHue(const std::string& output, const std::string& username, bool switchOffOnBlack,
-		bool setBrightness, int transitionTime, std::vector<unsigned int> lightIds) :
-		bridge( { output.c_str(), username.c_str() }), switchOffOnBlack(switchOffOnBlack), setBrightness(setBrightness), transitionTime(
+		float brightnessFactor, int transitionTime, std::vector<unsigned int> lightIds) :
+		bridge( { output.c_str(), username.c_str() }), switchOffOnBlack(switchOffOnBlack), brightnessFactor(brightnessFactor), transitionTime(
 				transitionTime), lightIds(lightIds) {
 	timer.setInterval(3000);
 	timer.setSingleShot(true);
@@ -298,7 +294,7 @@ int LedDevicePhilipsHue::write(const std::vector<ColorRgb> & ledValues) {
 			light.setOn(true);
 		}
 		light.setOn(true);
-		light.setColor(xy, setBrightness);
+		light.setColor(xy, brightnessFactor);
 		// Next light id.
 		idx++;
 	}
