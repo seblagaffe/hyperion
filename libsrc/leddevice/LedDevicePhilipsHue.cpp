@@ -99,9 +99,14 @@ CiColor PhilipsHueLight::rgbToCiColor(float red, float green, float blue) {
 	float g = (green > 0.04045f) ? powf((green + 0.055f) / (1.0f + 0.055f), 2.4f) : (green / 12.92f);
 	float b = (blue > 0.04045f) ? powf((blue + 0.055f) / (1.0f + 0.055f), 2.4f) : (blue / 12.92f);
 	// Convert to XYZ space.
-	float X = r * 0.649926f + g * 0.103455f + b * 0.197109f;
-	float Y = r * 0.234327f + g * 0.743075f + b * 0.022598f;
-	float Z = r * 0.0000000f + g * 0.053077f + b * 1.035763f;
+	//	float X = r * 0.649926f + g * 0.103455f + b * 0.197109f;
+	//	float Y = r * 0.234327f + g * 0.743075f + b * 0.022598f;
+	//	float Z = r * 0.0000000f + g * 0.053077f + b * 1.035763f;
+	// Slightly different implementation as documented.
+	// See https://github.com/mikz/PhilipsHueSDKiOS/blob/master/ApplicationDesignNotes/RGB%20to%20xy%20Color%20conversion.md
+	float X = r * 0.4124f + g * 0.3576f + b * 0.1805f;
+	float Y = r * 0.2126f + g * 0.7152f + b * 0.0722f;
+	float Z = r * 0.0193f + g * 0.1192f + b * 0.9505f;
 	// Convert to x,y space.
 	float cx = X / (X + Y + Z);
 	float cy = Y / (X + Y + Z);
