@@ -191,7 +191,7 @@ public:
  * @author ntim (github), bimsarck (github)
  */
 class LedDevicePhilipsHue: public QObject, public LedDevice {
-	Q_OBJECT
+Q_OBJECT
 public:
 	///
 	/// Constructs the device.

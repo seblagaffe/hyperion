@@ -265,7 +265,7 @@ int LedDevicePhilipsHue::write(const std::vector<ColorRgb> & ledValues) {
 	if (!areStatesSaved()) {
 		saveStates((unsigned int) ledValues.size());
 	}
-	// If there are less states saved than colors given, then maybe something went wrong beforeno.
+	// If there are less states saved than colors given, then maybe something went wrong before.
 	if (lights.size() != ledValues.size()) {
 		restoreStates();
 		return 0;
