@@ -215,31 +215,23 @@ void PhilipsHueLight::set(QString state) {
 	bridge.post(QString("lights/%1/state").arg(id), state);
 }
 
-void PhilipsHueLight::setOn(bool on, bool force) {
-	if (force || this->on != on) {
+void PhilipsHueLight::setOn(bool on) {
+	if (this->on != on) {
 		QString arg = on ? "true" : "false";
 		set(QString("{ \"on\": %1 }").arg(arg));
 	}
 	this->on = on;
 }
 
-bool PhilipsHueLight::isOn() const {
-	return on;
-}
-
-void PhilipsHueLight::setTransitionTime(unsigned int transitionTime, bool force) {
-	if (force || this->transitionTime != transitionTime) {
+void PhilipsHueLight::setTransitionTime(unsigned int transitionTime) {
+	if (this->transitionTime != transitionTime) {
 		set(QString("{ \"transitiontime\": %1 }").arg(transitionTime));
 	}
 	this->transitionTime = transitionTime;
 }
 
-unsigned int PhilipsHueLight::getTransitionTime() const {
-	return transitionTime;
-}
-
-void PhilipsHueLight::setColor(CiColor color, float brightnessFactor, bool force) {
-	if (force || this->color != color) {
+void PhilipsHueLight::setColor(CiColor color, float brightnessFactor) {
+	if (this->color != color) {
 		const int bri = qRound(qMin(254.0f, brightnessFactor * qMax(1.0f, color.bri * 254.0f)));
 		set(QString("{ \"xy\": [%1, %2], \"bri\": %3 }").arg(color.x, 0, 'f', 4).arg(color.y, 0, 'f', 4).arg(bri));
 	}
@@ -284,14 +276,17 @@ int LedDevicePhilipsHue::write(const std::vector<ColorRgb> & ledValues) {
 		// Get lamp.
 		PhilipsHueLight& light = lights.at(idx);
 		// Scale colors from [0, 255] to [0, 1] and convert to xy space.
-		CiColor xy = CiColor::rgbToCiColor(color.red / 255.0f, color.green / 255.0f, color.blue / 255.0f, light.getColorSpace());
+		CiColor xy = CiColor::rgbToCiColor(color.red / 255.0f, color.green / 255.0f, color.blue / 255.0f,
+				light.getColorSpace());
 		// Write color if color has been changed.
 		if (switchOffOnBlack && light.getColor() != CiColor::BLACK && xy == CiColor::BLACK) {
 			light.setOn(false);
 		} else if (switchOffOnBlack && light.getColor() == CiColor::BLACK && xy != CiColor::BLACK) {
 			light.setOn(true);
+		} else {
+			light.setOn(true);
 		}
-		light.setOn(true);
+		light.setTransitionTime(transitionTime);
 		light.setColor(xy, brightnessFactor);
 		// Next light id.
 		idx++;

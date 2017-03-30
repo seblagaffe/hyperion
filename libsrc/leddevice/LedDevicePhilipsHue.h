@@ -158,15 +158,25 @@ public:
 	PhilipsHueLight(PhilipsHueBridge& bridge, unsigned int id);
 	~PhilipsHueLight();
 
-	void setOn(bool on, bool force = false);
-	bool isOn() const;
+	///
+	/// @param on
+	///
+	void setOn(bool on);
 
-	void setTransitionTime(unsigned int transitionTime, bool force = false);
-	unsigned int getTransitionTime() const;
+	///
+	/// @param transitionTime the transition time between colors in multiples of 100 ms
+	///
+	void setTransitionTime(unsigned int transitionTime);
 
-	void setColor(CiColor color, float brightnessFactor = 1.0f, bool force = false);
+	///
+	/// @param color the color to set
+	/// @param brightnessFactor the factor to apply to the CiColor#bri value
+	///
+	void setColor(CiColor color, float brightnessFactor = 1.0f);
 	CiColor getColor() const;
 
+	///
+	/// @return the color space of the light determined by the model id reported by the bridge.
 	CiColorTriangle getColorSpace() const;
 
 };
