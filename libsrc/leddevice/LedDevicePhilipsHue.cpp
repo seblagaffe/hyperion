@@ -193,7 +193,7 @@ PhilipsHueLight::PhilipsHueLight(PhilipsHueBridge& bridge, unsigned int id) :
 		colorSpace.red = {0.675f, 0.322f};
 		colorSpace.green = {0.4091f, 0.518f};
 		colorSpace.blue = {0.167f, 0.04f};
-	} else if (GAMUT_C_MODEL_IDS.find(modelId) != GAMUT_B_MODEL_IDS.end()) {
+	} else if (GAMUT_C_MODEL_IDS.find(modelId) != GAMUT_C_MODEL_IDS.end()) {
 		colorSpace.red = {0.675f, 0.322f};
 		colorSpace.green = {0.2151f, 0.7106f};
 		colorSpace.blue = {0.167f, 0.04f};
