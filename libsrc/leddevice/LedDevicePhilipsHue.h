@@ -6,7 +6,6 @@
 
 // Qt includes
 #include <QObject>
-class QString;
 #include <QString>
 #include <QNetworkAccessManager>
 #include <QTimer>
